@@ -11,4 +11,4 @@ output:
 
 ## Project thoughts
 
-I am interested in exploring data related to rural voting habits. 
+I am interested in exploring data related to rural voting habits. I am particularly interested in data in Wisconsin. It may be interesting to compare voting habits of low income rural Wisconsin residents and low income urban Wisconsin Residents.  
