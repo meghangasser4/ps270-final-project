@@ -7,8 +7,17 @@ output:
     self_contained: false
 ---
 
+```{r}
+library(tidyverse)
+```
 
 
 ## Project thoughts
 
-I am interested in exploring data related to rural voting habits. I am particularly interested in data in Wisconsin. It may be interesting to compare voting habits of low income rural Wisconsin residents and low income urban Wisconsin Residents.  
+Are liberal counties more likely to implement renewable resource projects? In this study, I plan to review recent renewable resource projects in Wisconsin and if they are concentrated in more liberal or conservative counties. My hypothesis is that liberal counties in Wisconsin will have more renewable projects than conservative ones. This is based on the fact that Democratic policy makers often support environmental protection policies and therefore their voters will likely be more in support of renewable. The explanatory variable in this study will be the voting habits of the county and the dependent variable will be the size of renewable resource infrastructure within them. An observed pattern in the data that would support my hypothesis is if the counties with more liberal voters have more renewables. One that would not support my hypothesis is if the counties with more conservative voters use more renewables.
+
+```{r}
+data <- read_csv("data/renewables_wi.csv")
+head(data)
+```
+
