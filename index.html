@@ -116,7 +116,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/header-attrs-2.17/header-attrs.js","index_files/header-attrs-2.30/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js"]}
+  {"type":"character","attributes":{},"value":["data/renewables_wi.csv","index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/header-attrs-2.17/header-attrs.js","index_files/header-attrs-2.30/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
@@ -1544,9 +1544,36 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </div>
 
 <div class="d-article">
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidyverse.tidyverse.org'>tidyverse</a></span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
 <h2 id="project-thoughts">Project thoughts</h2>
-<p>I am interested in exploring data related to rural voting habits. I am particularly interested in data in Wisconsin. It may be interesting to compare voting habits of low income rural Wisconsin residents and low income urban Wisconsin Residents.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<p>Are liberal counties more likely to implement renewable resource projects? In this study, I plan to review recent renewable resource projects in Wisconsin and if they are concentrated in more liberal or conservative counties. My hypothesis is that liberal counties in Wisconsin will have more renewable projects than conservative ones. This is based on the fact that Democratic policy makers often support environmental protection policies and therefore their voters will likely be more in support of renewable. The explanatory variable in this study will be the voting habits of the county and the dependent variable will be the size of renewable resource infrastructure within them. An observed pattern in the data that would support my hypothesis is if the counties with more liberal voters have more renewables. One that would not support my hypothesis is if the counties with more conservative voters use more renewables.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_csv</a></span><span class='op'>(</span><span class='st'>"data/renewables_wi.csv"</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span></span></code></pre>
+</div>
+<pre><code># A tibble: 6 × 124
+  Demographic and Geograph…¹ ...2  ...3  ...4  ...5  ...6  ...7  ...8 
+  &lt;chr&gt;                      &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+1 FIPS2                      State STAT… State COUN… Coun… Hist… In a…
+2 55001                      WI    Wisc… Wisc… Adams Nonm… PURP… Yes  
+3 55003                      WI    Wisc… Wisc… Ashl… Nonm… BLUE  Yes  
+4 55005                      WI    Wisc… Wisc… Barr… Nonm… PURP… Yes  
+5 55007                      WI    Wisc… Wisc… Bayf… Nonm… PURP… Yes  
+6 55009                      WI    Wisc… Wisc… Brown Metr… PURP… Yes  
+# ℹ abbreviated name: ¹​`Demographic and Geographic Data`
+# ℹ 116 more variables: ...9 &lt;chr&gt;, ...10 &lt;chr&gt;, ...11 &lt;chr&gt;,
+#   ...12 &lt;chr&gt;, `Summary Data` &lt;chr&gt;, ...14 &lt;chr&gt;, ...15 &lt;chr&gt;,
+#   ...16 &lt;chr&gt;, ...17 &lt;chr&gt;, ...18 &lt;chr&gt;, ...19 &lt;chr&gt;, ...20 &lt;chr&gt;,
+#   ...21 &lt;chr&gt;, ...22 &lt;chr&gt;, ...23 &lt;chr&gt;, ...24 &lt;chr&gt;, ...25 &lt;chr&gt;,
+#   ...26 &lt;chr&gt;, ...27 &lt;chr&gt;, ...28 &lt;chr&gt;, ...29 &lt;chr&gt;, ...30 &lt;chr&gt;,
+#   ...31 &lt;chr&gt;, ...32 &lt;chr&gt;, ...33 &lt;chr&gt;, ...34 &lt;chr&gt;, …</code></pre>
+</div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
