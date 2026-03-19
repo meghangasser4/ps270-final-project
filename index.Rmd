@@ -17,7 +17,29 @@ library(tidyverse)
 Are liberal counties more likely to implement renewable resource projects? In this study, I plan to review recent renewable resource projects in Wisconsin and if they are concentrated in more liberal or conservative counties. My hypothesis is that liberal counties in Wisconsin will have more renewable projects than conservative ones. This is based on the fact that Democratic policy makers often support environmental protection policies and therefore their voters will likely be more in support of renewable. The explanatory variable in this study will be the voting habits of the county and the dependent variable will be the size of renewable resource infrastructure within them. An observed pattern in the data that would support my hypothesis is if the counties with more liberal voters have more renewables. One that would not support my hypothesis is if the counties with more conservative voters use more renewables.
 
 ```{r}
-data <- read_csv("data/renewables_wi.csv")
+data <- read_csv("data/renewables_wi.csv", col_names = FALSE)
+colnames(data) <- as.character(unlist(data[2, ]))
+data <- data[-c(1, 2), ]
+colnames(data) <- make.names(colnames(data), unique = TRUE)
+data$Estimated.Renewable.MWH.Generated..per.Year <- 
+  as.numeric(gsub(",", "", data$Estimated.Renewable.MWH.Generated..per.Year))
+names(data)[names(data) == 
+"Historical.Political.Leaning..Red.and.Blue...60..or.more..other...Purple....over.20.years"] <- "leaning"
 head(data)
+```
+
+
+```{r}
+leaning_RMWH_graph <-
+data |>
+group_by(leaning, COUNTY) |> 
+  ggplot(aes(x = leaning,
+             y = Estimated.Renewable.MWH.Generated..per.Year)) + 
+  geom_boxplot() + 
+labs(
+title = "County Renewable Energy Usage Based on Politcal Leaning", 
+x = "Historic Political Leaning",
+y = "Rewnewable Energy Generated Per Year (in MWH)")
+leaning_RMWH_graph
 ```
 
