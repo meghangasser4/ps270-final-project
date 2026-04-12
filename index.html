@@ -116,7 +116,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["data/renewables_wi.csv","index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/figure-html5/unnamed-chunk-3-1.png","index_files/header-attrs-2.17/header-attrs.js","index_files/header-attrs-2.30/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js"]}
+  {"type":"character","attributes":{},"value":["data/renewables_wi.csv","index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/figure-html5/unnamed-chunk-3-1.png","index_files/figure-html5/unnamed-chunk-4-1.png","index_files/header-attrs-2.17/header-attrs.js","index_files/header-attrs-2.30/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
@@ -1551,6 +1551,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </div>
 <h2 id="project-thoughts">Project thoughts</h2>
 <p>Are liberal counties more likely to implement renewable resource projects? In this study, I plan to review recent renewable resource projects in Wisconsin and if they are concentrated in more liberal or conservative counties. My hypothesis is that liberal counties in Wisconsin will have more renewable projects than conservative ones. This is based on the fact that Democratic policy makers often support environmental protection policies and therefore their voters will likely be more in support of renewable. The explanatory variable in this study will be the voting habits of the county and the dependent variable will be the size of renewable resource infrastructure within them. An observed pattern in the data that would support my hypothesis is if the counties with more liberal voters have more renewables. One that would not support my hypothesis is if the counties with more conservative voters use more renewables.</p>
+<p>Data Source: Petersen, M. (2026). Replication Data for: Database of U.S. Renewable Energy Infrastructure and Fossil Fuel Production Coupled with Basic Demography, Geography and Political Leanings, by County with a Baseline Year of 2022 (Version V1) [dataset]. Harvard Dataverse. <a href="https://doi.org/10.7910/DVN/Y0I9ZD" class="uri">https://doi.org/10.7910/DVN/Y0I9ZD</a></p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_csv</a></span><span class='op'>(</span><span class='st'>"data/renewables_wi.csv"</span>, col_names <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></span>
@@ -1559,6 +1560,10 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/make.names.html'>make.names</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span>, unique <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
 <span><span class='va'>data</span><span class='op'>$</span><span class='va'>Estimated.Renewable.MWH.Generated..per.Year</span> <span class='op'>&lt;-</span> </span>
 <span>  <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/grep.html'>gsub</a></span><span class='op'>(</span><span class='st'>","</span>, <span class='st'>""</span>, <span class='va'>data</span><span class='op'>$</span><span class='va'>Estimated.Renewable.MWH.Generated..per.Year</span><span class='op'>)</span><span class='op'>)</span></span>
+<span><span class='va'>data</span><span class='op'>$</span><span class='va'>X..Democratic.Voting</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/grep.html'>gsub</a></span><span class='op'>(</span><span class='st'>"%"</span>, <span class='st'>""</span>, <span class='va'>data</span><span class='op'>$</span><span class='va'>X..Democratic.Voting</span><span class='op'>)</span><span class='op'>)</span></span>
+<span><span class='va'>data</span><span class='op'>$</span><span class='va'>Total.Renewables.Installed.Capacity...MWH.</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/grep.html'>gsub</a></span><span class='op'>(</span><span class='st'>","</span>, <span class='st'>""</span>, <span class='va'>data</span><span class='op'>$</span><span class='va'>Total.Renewables.Installed.Capacity...MWH.</span><span class='op'>)</span><span class='op'>)</span></span>
+<span><span class='va'>data</span><span class='op'>$</span><span class='va'>Est.2022.NG.Consumed..mcf.</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/grep.html'>gsub</a></span><span class='op'>(</span><span class='st'>","</span>, <span class='st'>""</span>, <span class='va'>data</span><span class='op'>$</span><span class='va'>Est.2022.NG.Consumed..mcf.</span><span class='op'>)</span><span class='op'>)</span></span>
+<span><span class='va'>data</span><span class='op'>$</span><span class='va'>Ratio.of.RE.to.Energy.Consumed.per.capita.per.year</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/grep.html'>gsub</a></span><span class='op'>(</span><span class='st'>"%"</span>, <span class='st'>""</span>, <span class='va'>data</span><span class='op'>$</span><span class='va'>Ratio.of.RE.to.Energy.Consumed.per.capita.per.year</span><span class='op'>)</span><span class='op'>)</span></span>
 <span><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span> <span class='op'>==</span> </span>
 <span><span class='st'>"Historical.Political.Leaning..Red.and.Blue...60..or.more..other...Purple....over.20.years"</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='st'>"leaning"</span></span>
 <span><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span></span></code></pre>
@@ -1573,17 +1578,13 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 5 55009 WI    Wisconsin  Wisconsin Brown    Metro - Counties … PURPLE 
 6 55011 WI    Wisconsin  Wisconsin Buffalo  Nonmetro - Urban … PURPLE 
 # ℹ 117 more variables: In.an.RPS.State. &lt;chr&gt;,
-#   X..Democratic.Voting &lt;chr&gt;, County.Continuum.Code &lt;chr&gt;,
+#   X..Democratic.Voting &lt;dbl&gt;, County.Continuum.Code &lt;chr&gt;,
 #   Population &lt;chr&gt;, Total.Land.Area..sq.mi. &lt;chr&gt;,
 #   Average.per.Capita..State.Total.Electricty.Consumed.in.MWH.per.person.in.2022 &lt;chr&gt;,
 #   Non.Nuclear.Renewables.MWH.Produced.per.Resident.per.year &lt;chr&gt;,
-#   Ratio.of.RE.to.Energy.Consumed.per.capita.per.year &lt;chr&gt;,
+#   Ratio.of.RE.to.Energy.Consumed.per.capita.per.year &lt;dbl&gt;,
 #   MW.of.Installed.Renewable.Power.Capacity.per.Acre &lt;chr&gt;, …</code></pre>
 </div>
-<p>Estimated Renewable MWH Generated per Year based on county blue/purple/red</p>
-<ul>
-<li>graph that shows compares political affiliation of counties with Estimated Renewable MWH Generated</li>
-</ul>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>leaning_RMWH_graph</span> <span class='op'>&lt;-</span></span>
@@ -1600,6 +1601,50 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </div>
 <p><img src="index_files/figure-html5/unnamed-chunk-3-1.png" alt="" width="624" /></p>
 </div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>perc_vote_RMWH_graph</span> <span class='op'>&lt;-</span></span>
+<span><span class='va'>data</span> <span class='op'>|&gt;</span></span>
+<span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>COUNTY</span><span class='op'>)</span> <span class='op'>|&gt;</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>Estimated.Renewable.MWH.Generated..per.Year</span>,</span>
+<span>             y <span class='op'>=</span> <span class='va'>X..Democratic.Voting</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span></span>
+<span>title <span class='op'>=</span> <span class='st'>"County Renewable Energy Usage Based on Percent of Democratic Votes"</span>, </span>
+<span>x <span class='op'>=</span> <span class='st'>"County Renewable Energy Usage in MWH"</span>,</span>
+<span>y <span class='op'>=</span> <span class='st'>"Percent of Democraitc Votes"</span><span class='op'>)</span></span>
+<span><span class='va'>perc_vote_RMWH_graph</span></span></code></pre>
+</div>
+<p><img src="index_files/figure-html5/unnamed-chunk-4-1.png" alt="" width="624" /></p>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>fit1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>Estimated.Renewable.MWH.Generated..per.Year</span> <span class='op'>~</span> <span class='va'>X..Democratic.Voting</span>, data <span class='op'>=</span> <span class='va'>data</span><span class='op'>)</span></span>
+<span><span class='va'>fit1</span> <span class='op'>|&gt;</span></span>
+<span><span class='fu'>broom</span><span class='fu'>::</span><span class='fu'><a href='https://generics.r-lib.org/reference/tidy.html'>tidy</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>|&gt;</span> </span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='va'>term</span>, <span class='va'>estimate</span><span class='op'>)</span> <span class='op'>|&gt;</span> </span>
+<span>  <span class='fu'>knitr</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/knitr/man/kable.html'>kable</a></span><span class='op'>(</span><span class='op'>)</span></span></code></pre>
+</div>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: right;">estimate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">156380.9445</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">X..Democratic.Voting</td>
+<td style="text-align: right;">-299.5806</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>When the percent of people voting democrat is zero, counties produce 15630.9 MHW of renewable energy. Democratic voting and renewable energy production are negatively correlated as when democratic voting goes up by 1 percent, MHW of renewable energy goes down by 299.6.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
