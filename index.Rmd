@@ -7,70 +7,253 @@ output:
     self_contained: false
 ---
 
-```{r}
+```{r, include=FALSE}
 library(tidyverse)
+library(infer)
 ```
 
 
-## Project thoughts
+# Introduction
 
-Are liberal counties more likely to implement renewable resource projects? In this study, I plan to review recent renewable resource projects in Wisconsin and if they are concentrated in more liberal or conservative counties. My hypothesis is that liberal counties in Wisconsin will have more renewable projects than conservative ones. This is based on the fact that Democratic policy makers often support environmental protection policies and therefore their voters will likely be more in support of renewable. The explanatory variable in this study will be the voting habits of the county and the dependent variable will be the size of renewable resource infrastructure within them. An observed pattern in the data that would support my hypothesis is if the counties with more liberal voters have more renewables. One that would not support my hypothesis is if the counties with more conservative voters use more renewables.
+Research question: Are liberal counties in Wisconsin more likely to implement renewable resource projects?
 
-Data Source: Petersen, M. (2026). Replication Data for: Database of U.S. Renewable Energy Infrastructure and Fossil Fuel Production Coupled with Basic Demography, Geography and Political Leanings, by County with a Baseline Year of 2022 (Version V1) [dataset]. Harvard Dataverse. https://doi.org/10.7910/DVN/Y0I9ZD
+In this study, I plan to review recent renewable resource energy projects in Wisconsin and observe if they are concentrated in more liberal or conservative counties. My hypothesis is that liberal counties in Wisconsin are more likely to implement renewable resource projects than their conservative counterparts. This hypothesis is based on my prior knowledge of democratic voters largely being more likely to support renewable energy and overall environmental protection efforts. The explanatory variable in this study will be the voting habits of a county and the dependent variable will be the use of renewable energy in MW-H of the county. This is interesting because it provides companies and policymakers with information regarding which counties they should concentrate renewable energy project efforts on since they will be more likely to be approved in liberal counties if my hypothesis is correct. An observed pattern in the data that would support this hypothesis is if the counties with more liberal voters have more potential for renewable energy. One that would not support my hypothesis is if the swing or conservative counties use more renewable energy. 
 
-```{r}
+
+```{r, data cleaning, include=FALSE}
 data <- read_csv("data/renewables_wi.csv", col_names = FALSE)
+
 colnames(data) <- as.character(unlist(data[2, ]))
+
 data <- data[-c(1, 2), ]
+
 colnames(data) <- make.names(colnames(data), unique = TRUE)
+
 data$Estimated.Renewable.MWH.Generated..per.Year <- 
   as.numeric(gsub(",", "", data$Estimated.Renewable.MWH.Generated..per.Year))
+
 data$X..Democratic.Voting <- as.numeric(gsub("%", "", data$X..Democratic.Voting))
+
 data$Total.Renewables.Installed.Capacity...MWH. <- as.numeric(gsub(",", "", data$Total.Renewables.Installed.Capacity...MWH.))
+
 data$Est.2022.NG.Consumed..mcf. <- as.numeric(gsub(",", "", data$Est.2022.NG.Consumed..mcf.))
+
 data$Ratio.of.RE.to.Energy.Consumed.per.capita.per.year <- as.numeric(gsub("%", "", data$Ratio.of.RE.to.Energy.Consumed.per.capita.per.year))
+
+data$Population <- as.numeric(gsub(",", "", data$Population))
+
 names(data)[names(data) == 
 "Historical.Political.Leaning..Red.and.Blue...60..or.more..other...Purple....over.20.years"] <- "leaning"
+
 head(data)
 ```
 
+# The Data
+
+### Data Source
+Petersen, M. (2026). Replication Data for: Database of U.S. Renewable Energy Infrastructure and Fossil Fuel Production Coupled with Basic Demography, Geography and Political Leanings, by County with a Baseline Year of 2022 (Version V1) [dataset]. Harvard Dataverse. https://doi.org/10.7910/DVN/Y0I9ZD
+
+This data set is an overview of US county level non-nuclear renewable energy infrastructure and production. This data was published by Michael E. Petersen on 5/11/2025. The information in this data set came from multiple sources including the U.S. Department of Agriculture, Lawrence Berkley National Lab’s Energy Markets and Policy Department, MIT Election Data and Science Lab, U.S. Energy Information Administration, and the U.S. Department of Energy. This data set was created through expert coding and is a cross-sectional study. The key independent variable of leaning was taken from the MIT Election Data and Science Lab for years 2000-2020. The key dependent variable of Estimated.Renewable.MWH.Generated..per.Year was taken from U.S. Department of Energy reporting. Lastly, the Population variable is taken from the 2020 census. 
+
+### Key variables:
+
+Name                                              Description
+-------------------                              -------------------------------------------------------------------------------------
+`FIPS2`                                           FIPS Code (unique county identifier).
+`State`                                           State Abbreviation.
+`COUNTY`                                          County Name.
+`leaning`                                         From 2000-2020, 60% or more democratic is blue, 60% or more republican is red,
+                                                  anything in between is purple.
+`Estimated.Renewable.MWH.Generated..per.Year`     Number of megawatt hours (MWH) of power a the county’s technology would produce each
+                                                  year.
+
+### The Dependent Variable
+
+```{r, dependent variable summary, include=FALSE}
+mwh_summary <- data |>
+  group_by(COUNTY) |>
+  summarize(
+    avg_RMWH = mean(Estimated.Renewable.MWH.Generated..per.Year)) |>
+  slice_max(avg_RMWH, n = 35) |>
+  ggplot(mapping = aes(y = COUNTY,
+                       x = avg_RMWH)) + 
+  geom_col(fill = "hotpink2", color = "hotpink4") +
+  theme_minimal() +
+  labs(x = "Average Amount of Renewable Energy Used in Megawatt Hours",
+       y = "County Name",
+       title = "Usage of Renewabel Energy by County")
+```
 
 ```{r}
+mwh_summary
+```
+# The Results 
+
+```{r, include=FALSE}
 leaning_RMWH_graph <-
 data |>
 group_by(leaning, COUNTY) |> 
   ggplot(aes(x = leaning,
-             y = Estimated.Renewable.MWH.Generated..per.Year)) + 
+             y = Estimated.Renewable.MWH.Generated..per.Year,
+             fill = leaning)) + 
   geom_boxplot() + 
-labs(
-title = "County Renewable Energy Usage Based on Politcal Leaning", 
-x = "Historic Political Leaning",
-y = "Rewnewable Energy Generated Per Year (in MWH)")
+  stat_summary(fun = mean, geom = "point", 
+               shape = 23, size = 5, fill = "hotpink2", color = "hotpink4") +
+  scale_fill_manual(values = c(
+  "BLUE" = "cornflowerblue",
+  "PURPLE" = "darkorchid1",
+  "RED" = "tomato2")) +
+  theme_minimal() +
+  labs(
+    title = "County Renewable Energy Usage Based on Politcal Leaning", 
+    x = "Historic Political Leaning",
+    y = "Rewnewable Energy Generated Per Year (in MWH)")
+```
+
+```{r}
 leaning_RMWH_graph
 ```
+This graph shows that the median amount of renewable energy used by blue counties is higher than their purple and red counterparts. However, it also shows that red counties have a higher IQR and that the range is much greater, showing there are individual red counties that use a large amount of renewable energy. There are also high outliers in purple counties, meaning that a few purple counties use significantly more renewable energy than their median. Lastly, the pink dots represent the average amount of  renewable energy used by each county. This clearly shows that red counties use more renewable energy than blue and purple counties on average. While the average of blue counties renewable energy usage is similar to its median, the purple and red counties means are much higher than their medians. This shows that blue counties have a more normal distribution, whereas purple and red counties distributions are  skewed. This shows that while the average red county produces a lot of renewable energy, most produce very little and very high outliers are affecting the mean. Overall, blue counties produce more renewable energy than purple and red counties more consistently. 
 
+### Regression
 
-```{r}
-perc_vote_RMWH_graph <-
-data |>
-group_by(COUNTY) |> 
-  ggplot(aes(x = Estimated.Renewable.MWH.Generated..per.Year,
-             y = X..Democratic.Voting)) + 
-  geom_point() +
-labs(
-title = "County Renewable Energy Usage Based on Percent of Democratic Votes", 
-x = "County Renewable Energy Usage in MWH",
-y = "Percent of Democraitc Votes")
-perc_vote_RMWH_graph
-```
-
-```{r}
-fit1 <- lm(Estimated.Renewable.MWH.Generated..per.Year ~ X..Democratic.Voting, data = data)
-fit1 |>
+```{r, Leaning and MWH Regression code, include=FALSE}
+fit1 <- lm(Estimated.Renewable.MWH.Generated..per.Year ~ leaning, data = data)
+fit1_clean <- fit1 |>
 broom::tidy() |> 
   select(term, estimate) |> 
+  knitr::kable(
+    col.names = c("Term", "Estimate"),
+    digits = 2
+  )
+```
+
+```{r, Leaning and MWH Regression}
+fit1_clean
+```
+
+On average, blue counties produce 131291.33 MWH of renewable energy. Furthermore, purple counties use -348.42 MWH less in renewable energy than blue counties and red counties use 100003.83 more MWH of renewable energy on average. This can be explained by the high outliers in red counties as seen above in the boxplot. Most likely, there are a couple red counties in Wisconsin that house large renewable energy production sites such as large solar parks or wind farms. 
+
+
+### Average Treatment Effect 
+
+```{r, Treatment Variabel Creation, include=FALSE}
+data <- data |>
+mutate(Treatment = if_else(leaning == "BLUE", "Liberal", "Control"))
+```
+
+```{r, ATE code, include=FALSE}
+mwh_ate <- data |>
+specify(Estimated.Renewable.MWH.Generated..per.Year ~ Treatment) |>
+calculate(stat = "diff in means", order = c("Liberal", "Control"))
+
+mwh_ate_clean <- mwh_ate |>
   knitr::kable()
 ```
-When the percent of people voting democrat is zero, counties produce 15630.9 MHW of renewable energy. Democratic voting and renewable energy production are negatively correlated as when democratic voting goes up by 1 percent, MHW of renewable energy goes down by 299.6.
+
+```{r, ATE}
+mwh_ate_clean
+```
+
+The average treatment effect of blue leaning on renewable energy usage is -11693.85. This means that blue counties use 11693.85 less MWH of renewable energy than red and purple counties. This shows that there is a negative causal effect of liberal leaning on renewable energy usage. As liberal leaning increases, renewable energy decreases. 
+
+### P-Value 
+
+```{r, P-Value Code, include=FALSE}
+set.seed(53706)
+
+mwh_pval <- data |>
+specify(Estimated.Renewable.MWH.Generated..per.Year ~ Treatment) |>
+hypothesise(null = "independence") |>
+generate(reps = 1000, type = "permute") |>
+calculate(stat = "diff in means", order = c("Liberal", "Control")) |> 
+get_p_value(obs_stat = mwh_ate, direction = "both")
+mwh_pval_clean <- mwh_pval |>
+  knitr::kable(
+    digits = 2
+  )
+```
+
+```{r, P-value print}
+mwh_pval_clean
+```
+
+
+The p-value is 0.88, which is not close to zero. This means that the ATE we found could not be implausible at any conventional level of confidence. This means that the null hypothesis cannot be rejected and there is little statistical significance in our study. 
+
+
+### Null Hypothesis Test
+
+
+```{r, null hypothesis test, include=FALSE}
+set.seed(53706)
+
+mwh_null <- data |>
+specify(Estimated.Renewable.MWH.Generated..per.Year ~ Treatment) |>
+hypothesise(null = "independence") |>
+generate(reps = 1000, type = "permute") |>
+calculate(stat = "diff in means", order = c("Liberal", "Control"))
+mwh_null_clean <- knitr::kable(head(mwh_null),
+                               digits = 2)
+```
+
+```{r, Null print}
+mwh_null_clean
+```
+
+
+```{r, null plot code, include=FALSE}
+mwh_null_plot <- mwh_null |>
+visualize() +
+shade_p_value(obs_stat = mwh_ate, direction = "both")
+```
+
+```{r, null plot}
+mwh_null_plot
+```
+This graph shows that while that observed statistic lies within the rejected area, it does not lie very far into this rejected area so there is only a small amount of evidence against the null. It is also below zero, so the observed difference is negative. This reinforces the negative difference in means observed above. 
+
+
+### The Confounder 
+
+```{r, regression code with confounder, include=FALSE}
+fit2 <- lm(Estimated.Renewable.MWH.Generated..per.Year ~ leaning + Population, data = data)
+fit2_clean <- fit2 |>
+broom::tidy() |> 
+  select(term, estimate) |> 
+  knitr::kable(
+    digits = 2)
+```
+
+```{r, Regression with confounder print}
+fit2_clean
+```
+
+I wanted to use population as a confounder since I believe there may be a correlation between ruralness and available space and resources for renewable energy infrastructure. In highly populated counties such as Dane county, there is less in general for large solar and wind fields. This would explain the fact that there are red counties with extremely high renewable energy usage skewing the data since rural counties tend to be red leaning in Wisconsin. 
+
+This model shows that there is 28760.54 MW-H of renewable energy usage when a county is blue when holding population constant. This also shows that holding the population constant, purple counties use 88526.40 MWH more of renewable energy than blue counties. It also shows that holding population constant, red counties use 189902.60 more MWH of renewable energy than blue counties. This means that even when accounting for if a county is rural by looking at population, republican counties use more MWH of renewable energy in Wisconsin than democratic counties. This shows that there is causal effect that red counties use more renewable energy than blue counties. Holding county leaning constant, as population increases, renewable energy usage increases by 0.20. This could be explained by the fact that there is more industry in populated regions and they use more energy in general.
+
+# Summary
+
+Overall, while higher renewable energy usage in blue counties is more concentrated and the median renewable energy usage is higher, outliers in red and purple counties skew their means to be higher than blue counties. Red counties have the highest average renewable energy usage, even when holding population constant. There is a negative causal effect of liberal county leaning on renewable energy usage. I did not find support for my hypothesis that liberal counties in Wisconsin are more likely to implement renewable resource projects than their conservative counterparts. In fact, I found the opposite, that conservative counties are more likely to implement renewable energy. My analysis was likely limited by the fact that I looked at a relatively small set of data. This study may have issues with external validity since it may be too specific to Wisconsin. I don't think that these results could be applied to a more solidly blue state such as California. I could have improved this by looking not just at counties in Wisconsin and analyzing data for the entire Midwest of the entire United States. 
+
+
+# AI Disclosure 
+
+I used ChatGPT to explain error codes and explain other issues I was runnning into. 
+
+
+# Code Print Out 
+
+
+```{r print-code, ref.label=knitr::all_labels(), echo = TRUE, eval=FALSE}
+
+```
+
+
+
+
+
+
 
 
